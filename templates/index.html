@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задачи</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<main class="container">
+    <header>
+        <h1>Задачи</h1>
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-value">{{ tasks | length }}</span>
+                <span>всего</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">{{ tasks | selectattr(2) | list | length }}</span>
+                <span>выполнено</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">{{ tasks | rejectattr(2) | list | length }}</span>
+                <span>осталось</span>
+            </div>
+        </div>
+    </header>
+
+    <form action="/add" method="POST" class="add-form">
+        <input type="text" name="title" placeholder="Что нужно сделать?" required autocomplete="off">
+        <button type="submit">Добавить</button>
+    </form>
+
+    {% if tasks %}
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="task-item {{ 'completed' if task[2] == 1 }}">
+                    <a href="/toggle/{{ task[0] }}" class="task-checkbox {{ 'checked' if task[2] == 1 }}">
+                        {% if task[2] == 1 %}
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="2,7 5,10 12,3"></polyline>
+                            </svg>
+                        {% endif %}
+                    </a>
+                    
+                    <span class="task-text">{{ task[1] }}</span>
+                    
+                    <a href="/delete/{{ task[0] }}" class="delete-btn" onclick="return confirm('Удалить задачу?')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">∅</div>
+            <div class="empty-state-text">Пока что пусто. Добавьте первую задачу.</div>
+        </div>
+    {% endif %}
+</main>
+</body>
+</html>
