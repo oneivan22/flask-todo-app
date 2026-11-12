@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "7345:7345"
+    container_name: my-todo-container
